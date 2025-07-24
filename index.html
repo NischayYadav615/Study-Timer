@@ -28,6 +28,15 @@
             position: relative;
             color: white;
             touch-action: manipulation;
+            will-change: transform;
+        }
+
+        /* Force hardware acceleration for better performance */
+        * {
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body::before {
@@ -60,6 +69,29 @@
             z-index: 100;
             padding: 1rem 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        /* Fullscreen Focus Mode */
+        .focus-mode {
+            overflow: hidden;
+        }
+
+        .focus-mode .nav-container {
+            transform: translateY(-100%);
+        }
+
+        .focus-mode .main-container {
+            padding: 2rem;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .focus-mode .study-indicator {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .nav-tabs {
@@ -173,8 +205,17 @@
             position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .flip-card.smooth .flip-card-inner {
+            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .flip-card.ultra-smooth .flip-card-inner {
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         .flip-card.flipping .flip-card-inner {
@@ -283,6 +324,37 @@
             margin: 2rem 0;
             text-shadow: 0 0 30px rgba(255,255,255,0.3);
             font-family: 'Courier New', monospace;
+        }
+
+        /* Timer with Flip Clock Display */
+        .timer-flip-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .timer-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .timer-unit-label {
+            color: #666666;
+            font-size: 0.8rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .timer-flip-card {
+            position: relative;
+            width: 120px;
+            height: 160px;
+            perspective: 1000px;
         }
 
         .timer-controls {
@@ -722,6 +794,13 @@
             50% { opacity: 0.5; }
         }
 
+        /* Download and preload optimization */
+        .preload-fonts {
+            position: absolute;
+            visibility: hidden;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .nav-tabs {
@@ -737,16 +816,20 @@
                 padding: 90px 1rem 1rem;
             }
 
+            .focus-mode .main-container {
+                padding: 1rem;
+            }
+
             .title {
                 font-size: 1.5rem;
                 letter-spacing: 4px;
             }
 
-            .clock-container {
+            .clock-container, .timer-flip-container {
                 gap: 1rem;
             }
 
-            .flip-card {
+            .flip-card, .timer-flip-card {
                 width: 100px;
                 height: 130px;
             }
@@ -779,10 +862,20 @@
             .chart-bars {
                 height: 150px;
             }
+
+            /* Focus mode mobile adjustments */
+            .focus-mode .flip-card, .focus-mode .timer-flip-card {
+                width: 120px;
+                height: 160px;
+            }
+
+            .focus-mode .flip-card-front, .focus-mode .flip-card-back {
+                font-size: 4rem;
+            }
         }
 
         @media (max-width: 480px) {
-            .flip-card {
+            .flip-card, .timer-flip-card {
                 width: 80px;
                 height: 100px;
             }
@@ -797,6 +890,15 @@
 
             .section-title {
                 font-size: 1.5rem;
+            }
+
+            .focus-mode .flip-card, .focus-mode .timer-flip-card {
+                width: 100px;
+                height: 130px;
+            }
+
+            .focus-mode .flip-card-front, .focus-mode .flip-card-back {
+                font-size: 3rem;
             }
         }
     </style>
@@ -822,10 +924,10 @@
                 <h1 class="title">Focus Timer</h1>
                 <div class="subtitle">India Standard Time</div>
                 
-                <div class="clock-container">
+                <div class="clock-container" id="clockContainer">
                     <div class="time-unit">
                         <div class="unit-label">Hours</div>
-                        <div class="flip-card" id="hours">
+                        <div class="flip-card smooth" id="hours">
                             <div class="flip-card-inner">
                                 <div class="flip-card-front">00</div>
                                 <div class="flip-card-back">00</div>
@@ -837,7 +939,7 @@
                     
                     <div class="time-unit">
                         <div class="unit-label">Minutes</div>
-                        <div class="flip-card" id="minutes">
+                        <div class="flip-card smooth" id="minutes">
                             <div class="flip-card-inner">
                                 <div class="flip-card-front">00</div>
                                 <div class="flip-card-back">00</div>
@@ -849,7 +951,7 @@
                     
                     <div class="time-unit" id="secondsUnit">
                         <div class="unit-label">Seconds</div>
-                        <div class="flip-card" id="seconds">
+                        <div class="flip-card smooth" id="seconds">
                             <div class="flip-card-inner">
                                 <div class="flip-card-front">00</div>
                                 <div class="flip-card-back">00</div>
@@ -875,9 +977,35 @@
         <div class="tab-content" id="timer-tab">
             <div class="timer-section">
                 <h2 class="section-title">Study Timer</h2>
-                <div class="timer-display" id="timerDisplay">25:00</div>
+                
+                <div class="timer-flip-container" id="timerFlipContainer">
+                    <div class="timer-unit">
+                        <div class="timer-unit-label">Minutes</div>
+                        <div class="timer-flip-card smooth" id="timerMinutes">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">25</div>
+                                <div class="flip-card-back">25</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="separator">:</div>
+                    
+                    <div class="timer-unit">
+                        <div class="timer-unit-label">Seconds</div>
+                        <div class="timer-flip-card smooth" id="timerSeconds">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">00</div>
+                                <div class="flip-card-back">00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timer-display" id="timerDisplay" style="display: none;">25:00</div>
                 
                 <div class="timer-controls">
+                    <button class="timer-btn" id="toggleTimerDisplay">Switch to Digital</button>
                     <button class="timer-btn start" id="startTimer">Start</button>
                     <button class="timer-btn pause" id="pauseTimer">Pause</button>
                     <button class="timer-btn reset" id="resetTimer">Reset</button>
@@ -1073,8 +1201,11 @@
             initializeData() {
                 this.showSeconds = true;
                 this.format24h = false;
-                this.smoothFlip = false;
+                this.smoothFlip = true;
                 this.previousTime = { hours: '', minutes: '', seconds: '' };
+                this.previousTimerTime = { minutes: '', seconds: '' };
+                this.isTimerFlipMode = true;
+                this.isFocusMode = false;
                 
                 // Timer data
                 this.timerDuration = 25 * 60; // 25 minutes in seconds
@@ -1095,6 +1226,9 @@
                     sessions: [],
                     tasks: []
                 };
+                
+                // Preload resources
+                this.preloadResources();
             }
 
             initializeElements() {
@@ -1106,9 +1240,14 @@
                 this.ampmDisplay = document.getElementById('ampm');
                 this.dateDisplay = document.getElementById('dateDisplay');
                 this.secondsSeparator = document.getElementById('secondsSeparator');
+                this.clockContainer = document.getElementById('clockContainer');
                 
                 // Timer elements
                 this.timerDisplay = document.getElementById('timerDisplay');
+                this.timerFlipContainer = document.getElementById('timerFlipContainer');
+                this.timerMinutesCard = document.getElementById('timerMinutes');
+                this.timerSecondsCard = document.getElementById('timerSeconds');
+                this.toggleTimerDisplayBtn = document.getElementById('toggleTimerDisplay');
                 this.startTimerBtn = document.getElementById('startTimer');
                 this.pauseTimerBtn = document.getElementById('pauseTimer');
                 this.resetTimerBtn = document.getElementById('resetTimer');
@@ -1126,6 +1265,10 @@
                 
                 // Notification
                 this.notification = document.getElementById('notification');
+                
+                // Add touch events for focus mode
+                this.clockContainer.addEventListener('click', () => this.toggleFocusMode());
+                this.timerFlipContainer.addEventListener('click', () => this.toggleFocusMode());
             }
 
             initializeClock() {
@@ -1382,6 +1525,71 @@
                 const minutes = Math.floor(this.timeLeft / 60);
                 const seconds = this.timeLeft % 60;
                 this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                this.updateTimerFlipCards();
+            }
+
+            updateTimerFlipCards() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                const timerData = {
+                    minutes: String(minutes).padStart(2, '0'),
+                    seconds: String(seconds).padStart(2, '0')
+                };
+                
+                this.flipCard(this.timerMinutesCard, timerData.minutes, this.previousTimerTime.minutes);
+                this.flipCard(this.timerSecondsCard, timerData.seconds, this.previousTimerTime.seconds);
+                
+                this.previousTimerTime = {
+                    minutes: timerData.minutes,
+                    seconds: timerData.seconds
+                };
+            }
+
+            toggleTimerDisplay() {
+                this.isTimerFlipMode = !this.isTimerFlipMode;
+                if (this.isTimerFlipMode) {
+                    this.timerFlipContainer.style.display = 'flex';
+                    this.timerDisplay.style.display = 'none';
+                    this.toggleTimerDisplayBtn.textContent = 'Switch to Digital';
+                } else {
+                    this.timerFlipContainer.style.display = 'none';
+                    this.timerDisplay.style.display = 'block';
+                    this.toggleTimerDisplayBtn.textContent = 'Switch to Flip';
+                }
+            }
+
+            toggleFocusMode() {
+                this.isFocusMode = !this.isFocusMode;
+                document.body.classList.toggle('focus-mode', this.isFocusMode);
+                
+                if (this.isFocusMode) {
+                    this.showNotification('Focus mode activated - tap again to exit', 'info');
+                } else {
+                    this.showNotification('Focus mode deactivated', 'info');
+                }
+            }
+
+            preloadResources() {
+                // Force browser to download and cache fonts
+                const fontPreloader = document.createElement('div');
+                fontPreloader.className = 'preload-fonts';
+                fontPreloader.innerHTML = '0123456789:';
+                document.body.appendChild(fontPreloader);
+                
+                // Preload flip animation frames
+                setTimeout(() => {
+                    ['hours', 'minutes', 'seconds', 'timerMinutes', 'timerSeconds'].forEach(cardId => {
+                        const card = document.getElementById(cardId);
+                        if (card) {
+                            card.classList.add('smooth');
+                        }
+                    });
+                }, 100);
+                
+                // Remove preloader
+                setTimeout(() => {
+                    document.body.removeChild(fontPreloader);
+                }, 500);
             }
 
             // Task Methods
