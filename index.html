@@ -1,13 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>StudyMaster Pro - Advanced Study Timer & Task Manager</title>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile App Builder Studio</title>
     <style>
         * {
             margin: 0;
@@ -16,1905 +12,1778 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d2d 50%, #1a1a1a 75%, #000000 100%);
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-x: hidden;
-            position: relative;
-            color: white;
-            touch-action: manipulation;
-            will-change: transform;
-        }
-
-        /* Force hardware acceleration for better performance */
-        * {
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
-                radial-gradient(circle at 40% 60%, rgba(128, 128, 128, 0.05) 0%, transparent 50%);
-            animation: subtleFloat 30s ease-in-out infinite;
-        }
-
-        @keyframes subtleFloat {
-            0%, 100% { transform: translateY(0px) scale(1); opacity: 1; }
-            50% { transform: translateY(-5px) scale(1.02); opacity: 0.8; }
-        }
-
-        /* Navigation */
-        .nav-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 100;
-            padding: 1rem 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        /* Fullscreen Focus Mode */
-        .focus-mode {
-            overflow: hidden;
-        }
-
-        .focus-mode .nav-container {
-            transform: translateY(-100%);
-        }
-
-        .focus-mode .main-container {
-            padding: 2rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .focus-mode .study-indicator {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .nav-tab {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #cccccc;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            position: relative;
             overflow: hidden;
         }
 
-        .nav-tab.active {
-            background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-            color: #ffffff;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.1);
-        }
-
-        .nav-tab:hover {
-            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            transform: translateY(-2px);
-        }
-
-        /* Main Container */
-        .main-container {
-            width: 100%;
-            max-width: 1200px;
-            padding: 100px 2rem 2rem;
-            z-index: 10;
-            position: relative;
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Clock Tab Styles */
-        .clock-section {
-            text-align: center;
-        }
-
-        .title {
-            color: #ffffff;
-            font-size: 2rem;
-            font-weight: 200;
-            letter-spacing: 8px;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            color: #888888;
-            font-size: 0.9rem;
-            font-weight: 300;
-            letter-spacing: 3px;
-            margin-bottom: 4rem;
-            text-transform: uppercase;
-        }
-
-        .clock-container {
+        .app-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            margin-bottom: 4rem;
+            height: 100vh;
+            background: #1e1e1e;
+            color: #fff;
         }
 
-        .time-unit {
+        .sidebar {
+            width: 250px;
+            background: #252526;
+            border-right: 1px solid #333;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 1rem;
         }
 
-        .unit-label {
-            color: #666666;
-            font-size: 0.8rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        .sidebar-header {
+            padding: 15px;
+            background: #2d2d30;
+            border-bottom: 1px solid #333;
+            font-weight: bold;
+            font-size: 14px;
         }
 
-        .flip-card {
-            position: relative;
-            width: 140px;
-            height: 180px;
-            perspective: 1000px;
+        .file-explorer {
+            flex: 1;
+            overflow-y: auto;
         }
 
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform-style: preserve-3d;
-            will-change: transform;
-        }
-
-        .flip-card.smooth .flip-card-inner {
-            transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        .flip-card.ultra-smooth .flip-card-inner {
-            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .flip-card.flipping .flip-card-inner {
-            transform: rotateX(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            background: linear-gradient(145deg, #ffffff, #e8e8e8);
-            box-shadow: 
-                0 20px 40px rgba(0,0,0,0.4),
-                0 8px 16px rgba(0,0,0,0.2),
-                inset 0 1px 0 rgba(255,255,255,0.9),
-                inset 0 -1px 0 rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            font-weight: 200;
-            color: #1a1a1a;
-            border: 1px solid rgba(255,255,255,0.1);
-            overflow: hidden;
-        }
-
-        .flip-card-back {
-            transform: rotateX(180deg);
-        }
-
-        .separator {
-            font-size: 4rem;
-            color: #888888;
-            font-weight: 100;
-            animation: breathe 3s ease-in-out infinite;
-            user-select: none;
-        }
-
-        @keyframes breathe {
-            0%, 100% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.95); }
-        }
-
-        .ampm {
-            font-size: 2.5rem;
-            color: #cccccc;
-            font-weight: 100;
-            align-self: flex-end;
-            margin-bottom: 40px;
-            margin-left: 1rem;
-            letter-spacing: 2px;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .control-btn {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #cccccc;
-            padding: 12px 28px;
-            border-radius: 25px;
+        .file-item {
+            padding: 8px 15px;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative;
-            overflow: hidden;
-            touch-action: manipulation;
-        }
-
-        .control-btn:hover {
-            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            color: #ffffff;
-        }
-
-        .control-btn.active {
-            background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-            color: #ffffff;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.1);
-        }
-
-        /* Timer Section */
-        .timer-section {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .timer-display {
-            font-size: 6rem;
-            font-weight: 200;
-            color: #ffffff;
-            margin: 2rem 0;
-            text-shadow: 0 0 30px rgba(255,255,255,0.3);
-            font-family: 'Courier New', monospace;
-        }
-
-        /* Timer with Flip Clock Display */
-        .timer-flip-container {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 2rem;
-            margin: 2rem 0;
+            transition: background 0.2s;
         }
 
-        .timer-unit {
+        .file-item:hover {
+            background: #2a2d2e;
+        }
+
+        .file-item.active {
+            background: #094771;
+        }
+
+        .file-icon {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .main-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 1rem;
         }
 
-        .timer-unit-label {
-            color: #666666;
-            font-size: 0.8rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .timer-flip-card {
-            position: relative;
-            width: 120px;
-            height: 160px;
-            perspective: 1000px;
-        }
-
-        .timer-controls {
+        .toolbar {
+            height: 50px;
+            background: #2d2d30;
+            border-bottom: 1px solid #333;
             display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
+            align-items: center;
+            padding: 0 15px;
+            gap: 10px;
         }
 
-        .timer-btn {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #cccccc;
-            padding: 1rem 2rem;
-            border-radius: 15px;
+        .btn {
+            padding: 8px 16px;
+            background: #0e639c;
+            color: white;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 12px;
+            transition: background 0.2s;
         }
 
-        .timer-btn:hover {
-            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            transform: translateY(-2px);
+        .btn:hover {
+            background: #1177bb;
         }
 
-        .timer-btn.start {
-            background: linear-gradient(145deg, #4CAF50, #45a049);
+        .btn.secondary {
+            background: #5a5a5a;
         }
 
-        .timer-btn.pause {
-            background: linear-gradient(145deg, #ff9800, #f57c00);
+        .btn.secondary:hover {
+            background: #6a6a6a;
         }
 
-        .timer-btn.reset {
-            background: linear-gradient(145deg, #f44336, #d32f2f);
+        .btn.success {
+            background: #16a085;
         }
 
-        .timer-presets {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
+        .btn.success:hover {
+            background: #1abc9c;
         }
 
-        .preset-btn {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #cccccc;
-            padding: 1.5rem;
-            border-radius: 15px;
+        .content-area {
+            flex: 1;
+            display: flex;
+        }
+
+        .editor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1e1e1e;
+        }
+
+        .editor-tabs {
+            display: flex;
+            background: #2d2d30;
+            border-bottom: 1px solid #333;
+            overflow-x: auto;
+        }
+
+        .editor-tab {
+            padding: 10px 15px;
+            background: #2d2d30;
+            border-right: 1px solid #333;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
         }
 
-        .preset-btn:hover {
-            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            transform: translateY(-2px);
+        .editor-tab.active {
+            background: #1e1e1e;
         }
 
-        .preset-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .preset-time {
-            font-size: 0.9rem;
+        .tab-close {
+            cursor: pointer;
             opacity: 0.7;
         }
 
-        .custom-timer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
+        .tab-close:hover {
+            opacity: 1;
         }
 
-        .custom-input {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 0.8rem;
-            border-radius: 10px;
-            width: 80px;
-            text-align: center;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .custom-input::placeholder {
-            color: #888888;
-        }
-
-        /* Study Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-value {
-            font-size: 3rem;
-            font-weight: 200;
-            color: #4CAF50;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #888888;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Task Manager */
-        .task-section {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 200;
-            text-align: center;
-            margin-bottom: 2rem;
-            color: #ffffff;
-            letter-spacing: 3px;
-        }
-
-        .task-input-container {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .task-input {
+        .code-editor {
             flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 1rem;
-            border-radius: 15px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .task-input::placeholder {
-            color: #888888;
-        }
-
-        .add-task-btn {
-            background: linear-gradient(145deg, #4CAF50, #45a049);
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
             border: none;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            outline: none;
+            padding: 15px;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
         }
 
-        .add-task-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
-        }
-
-        .task-list {
+        .preview-panel {
+            width: 300px;
+            background: #2d2d30;
+            border-left: 1px solid #333;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
         }
 
-        .task-item {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .task-item:hover {
-            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-            transform: translateX(5px);
-        }
-
-        .task-item.completed {
-            opacity: 0.6;
-        }
-
-        .task-item.completed .task-text {
-            text-decoration: line-through;
-        }
-
-        .task-checkbox {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid #4CAF50;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .task-checkbox.checked {
-            background: #4CAF50;
-            border-color: #4CAF50;
-        }
-
-        .task-checkbox.checked::after {
-            content: '✓';
-            color: white;
-            font-size: 14px;
+        .preview-header {
+            padding: 15px;
+            background: #323233;
+            border-bottom: 1px solid #333;
             font-weight: bold;
+            font-size: 14px;
+            text-align: center;
         }
 
-        .task-text {
+        .phone-preview {
             flex: 1;
-            font-size: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        .task-time {
-            color: #888888;
-            font-size: 0.8rem;
+        .phone-frame {
+            width: 200px;
+            height: 400px;
+            background: #000;
+            border-radius: 20px;
+            border: 3px solid #333;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .task-delete {
-            background: #f44336;
-            border: none;
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            color: #000;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2d2d30;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90vw;
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            background: #1e1e1e;
+            border: 1px solid #555;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .status-bar {
+            height: 25px;
+            background: #007acc;
             color: white;
-            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 12px;
+            gap: 20px;
+        }
+
+        .project-info {
+            padding: 10px 15px;
+            background: #323233;
+            border-bottom: 1px solid #333;
+            font-size: 12px;
+        }
+
+        .feature-list {
+            padding: 15px;
+            background: #252526;
+        }
+
+        .feature-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .feature-toggle {
+            width: 40px;
+            height: 20px;
+            background: #555;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .feature-toggle.active {
+            background: #16a085;
+        }
+
+        .feature-toggle::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+
+        .feature-toggle.active::before {
+            transform: translateX(20px);
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .export-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .task-delete:hover {
-            background: #d32f2f;
-            transform: scale(1.05);
-        }
-
-        /* Progress Section */
-        .progress-section {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .progress-chart {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .chart-title {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: #ffffff;
-        }
-
-        .chart-bars {
-            display: flex;
-            align-items: end;
-            justify-content: space-between;
-            height: 200px;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .chart-bar {
-            flex: 1;
-            background: linear-gradient(to top, #4CAF50, #81C784);
-            border-radius: 8px 8px 0 0;
-            position: relative;
-            transition: all 0.3s ease;
-            min-height: 20px;
-            cursor: pointer;
-        }
-
-        .chart-bar:hover {
-            filter: brightness(1.2);
-            transform: scaleY(1.05);
-        }
-
-        .chart-label {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: #888888;
-            white-space: nowrap;
-        }
-
-        .chart-value {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.7rem;
-            color: #4CAF50;
             font-weight: bold;
+            transition: transform 0.2s;
         }
 
-        /* Goals Section */
-        .goals-section {
-            max-width: 800px;
-            margin: 0 auto;
+        .export-btn:hover {
+            transform: translateY(-2px);
         }
 
-        .goal-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 1rem 0;
-        }
-
-        .goal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .goal-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .goal-progress {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            height: 10px;
-            margin: 1rem 0;
-            overflow: hidden;
-        }
-
-        .goal-progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #81C784);
-            border-radius: 20px;
-            transition: width 0.5s ease;
-        }
-
-        /* Notifications */
-        .notification {
+        .context-menu {
             position: fixed;
-            top: 80px;
-            right: 20px;
-            background: linear-gradient(145deg, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 15px;
+            background: #2d2d30;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 5px 0;
             z-index: 1000;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        .notification.show {
-            transform: translateX(0);
+        .context-menu-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
-        .notification.success {
-            border-left: 4px solid #4CAF50;
+        .context-menu-item:hover {
+            background: #094771;
         }
 
-        .notification.warning {
-            border-left: 4px solid #ff9800;
-        }
-
-        .notification.info {
-            border-left: 4px solid #2196F3;
-        }
-
-        /* Date Display */
-        .date-display {
-            color: #888888;
-            font-size: 1rem;
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        .study-indicator {
+        .loading {
+            display: none;
             position: fixed;
-            top: 80px;
-            left: 2rem;
-            color: #666666;
-            font-size: 0.8rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            z-index: 50;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 2000;
         }
 
-        .study-indicator::before {
-            content: '●';
-            color: #4CAF50;
-            margin-right: 0.5rem;
-            animation: pulse 2s ease-in-out infinite;
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #333;
+            border-top: 4px solid #16a085;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Download and preload optimization */
-        .preload-fonts {
-            position: absolute;
-            visibility: hidden;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-tabs {
-                gap: 0.5rem;
-            }
-
-            .nav-tab {
-                padding: 0.6rem 1rem;
-                font-size: 0.8rem;
-            }
-
-            .main-container {
-                padding: 90px 1rem 1rem;
-            }
-
-            .focus-mode .main-container {
-                padding: 1rem;
-            }
-
-            .title {
-                font-size: 1.5rem;
-                letter-spacing: 4px;
-            }
-
-            .clock-container, .timer-flip-container {
-                gap: 1rem;
-            }
-
-            .flip-card, .timer-flip-card {
-                width: 100px;
-                height: 130px;
-            }
-
-            .flip-card-front, .flip-card-back {
-                font-size: 3.5rem;
-            }
-
-            .timer-display {
-                font-size: 4rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .task-input-container {
-                flex-direction: column;
-            }
-
-            .controls, .timer-controls {
-                gap: 0.5rem;
-            }
-
-            .control-btn, .timer-btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 0.8rem;
-            }
-
-            .chart-bars {
-                height: 150px;
-            }
-
-            /* Focus mode mobile adjustments */
-            .focus-mode .flip-card, .focus-mode .timer-flip-card {
-                width: 120px;
-                height: 160px;
-            }
-
-            .focus-mode .flip-card-front, .focus-mode .flip-card-back {
-                font-size: 4rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .flip-card, .timer-flip-card {
-                width: 80px;
-                height: 100px;
-            }
-
-            .flip-card-front, .flip-card-back {
-                font-size: 2.5rem;
-            }
-
-            .timer-display {
-                font-size: 3rem;
-            }
-
-            .section-title {
-                font-size: 1.5rem;
-            }
-
-            .focus-mode .flip-card, .focus-mode .timer-flip-card {
-                width: 100px;
-                height: 130px;
-            }
-
-            .focus-mode .flip-card-front, .focus-mode .flip-card-back {
-                font-size: 3rem;
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="study-indicator" id="studyIndicator">Study Mode Active</div>
-
-    <nav class="nav-container">
-        <div class="nav-tabs">
-            <button class="nav-tab active" data-tab="clock">Clock</button>
-            <button class="nav-tab" data-tab="timer">Timer</button>
-            <button class="nav-tab" data-tab="tasks">Tasks</button>
-            <button class="nav-tab" data-tab="stats">Statistics</button>
-            <button class="nav-tab" data-tab="progress">Progress</button>
-            <button class="nav-tab" data-tab="goals">Goals</button>
-        </div>
-    </nav>
-
-    <div class="main-container">
-        <!-- Clock Tab -->
-        <div class="tab-content active" id="clock-tab">
-            <div class="clock-section">
-                <h1 class="title">Focus Timer</h1>
-                <div class="subtitle">India Standard Time</div>
-                
-                <div class="clock-container" id="clockContainer">
-                    <div class="time-unit">
-                        <div class="unit-label">Hours</div>
-                        <div class="flip-card smooth" id="hours">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front">00</div>
-                                <div class="flip-card-back">00</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="separator">:</div>
-                    
-                    <div class="time-unit">
-                        <div class="unit-label">Minutes</div>
-                        <div class="flip-card smooth" id="minutes">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front">00</div>
-                                <div class="flip-card-back">00</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="separator" id="secondsSeparator">:</div>
-                    
-                    <div class="time-unit" id="secondsUnit">
-                        <div class="unit-label">Seconds</div>
-                        <div class="flip-card smooth" id="seconds">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front">00</div>
-                                <div class="flip-card-back">00</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="ampm" id="ampm">AM</div>
-                </div>
-                
-                <div class="controls">
-                    <button class="control-btn active" id="showSeconds">Hide Seconds</button>
-                    <button class="control-btn active" id="format12h">12 Hour</button>
-                    <button class="control-btn" id="smoothFlip">Enhanced Flip</button>
-                    <button class="control-btn" id="fullscreenBtn">Fullscreen</button>
-                </div>
-                
-                <div class="date-display" id="dateDisplay"></div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                📱 App Builder Studio
             </div>
-        </div>
+            
+            <div class="project-info">
+                <div><strong>Project:</strong> <span id="project-name">My App</span></div>
+                <div><strong>Files:</strong> <span id="file-count">0</span></div>
+            </div>
 
-        <!-- Timer Tab -->
-        <div class="tab-content" id="timer-tab">
-            <div class="timer-section">
-                <h2 class="section-title">Study Timer</h2>
-                
-                <div class="timer-flip-container" id="timerFlipContainer">
-                    <div class="timer-unit">
-                        <div class="timer-unit-label">Minutes</div>
-                        <div class="timer-flip-card smooth" id="timerMinutes">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front">25</div>
-                                <div class="flip-card-back">25</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="separator">:</div>
-                    
-                    <div class="timer-unit">
-                        <div class="timer-unit-label">Seconds</div>
-                        <div class="timer-flip-card smooth" id="timerSeconds">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front">00</div>
-                                <div class="flip-card-back">00</div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="file-explorer" id="file-explorer">
+                <div class="file-item" onclick="showNewFileModal()">
+                    <span class="file-icon">➕</span>
+                    <span>New File</span>
                 </div>
-
-                <div class="timer-display" id="timerDisplay" style="display: none;">25:00</div>
-                
-                <div class="timer-controls">
-                    <button class="timer-btn" id="toggleTimerDisplay">Switch to Digital</button>
-                    <button class="timer-btn start" id="startTimer">Start</button>
-                    <button class="timer-btn pause" id="pauseTimer">Pause</button>
-                    <button class="timer-btn reset" id="resetTimer">Reset</button>
-                </div>
-
-                <div class="custom-timer">
-                    <label>Custom Timer:</label>
-                    <input type="number" class="custom-input" id="customMinutes" placeholder="25" min="1" max="120">
-                    <span>minutes</span>
-                    <button class="timer-btn" id="setCustomTimer">Set</button>
-                </div>
-                
-                <div class="timer-presets">
-                    <div class="preset-btn" data-minutes="25">
-                        <div class="preset-title">Pomodoro</div>
-                        <div class="preset-time">25 minutes</div>
-                    </div>
-                    <div class="preset-btn" data-minutes="15">
-                        <div class="preset-title">Quick Study</div>
-                        <div class="preset-time">15 minutes</div>
-                    </div>
-                    <div class="preset-btn" data-minutes="45">
-                        <div class="preset-title">Deep Focus</div>
-                        <div class="preset-time">45 minutes</div>
-                    </div>
-                    <div class="preset-btn" data-minutes="5">
-                        <div class="preset-title">Short Break</div>
-                        <div class="preset-time">5 minutes</div>
-                    </div>
-                    <div class="preset-btn" data-minutes="60">
-                        <div class="preset-title">Long Session</div>
-                        <div class="preset-time">60 minutes</div>
-                    </div>
-                    <div class="preset-btn" data-minutes="90">
-                        <div class="preset-title">Extended Study</div>
-                        <div class="preset-time">90 minutes</div>
-                    </div>
+                <div class="file-item" onclick="showNewFolderModal()">
+                    <span class="file-icon">📁</span>
+                    <span>New Folder</span>
                 </div>
             </div>
         </div>
 
-        <!-- Tasks Tab -->
-        <div class="tab-content" id="tasks-tab">
-            <div class="task-section">
-                <h2 class="section-title">Task Manager</h2>
-                
-                <div class="task-input-container">
-                    <input type="text" class="task-input" id="taskInput" placeholder="Enter a new task...">
-                    <button class="add-task-btn" id="addTaskBtn">Add Task</button>
-                </div>
-                
-                <div class="task-list" id="taskList">
-                    <!-- Tasks will be dynamically added here -->
-                </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <button class="btn" onclick="newProject()">New Project</button>
+                <button class="btn secondary" onclick="saveProject()">Save</button>
+                <button class="btn secondary" onclick="loadProject()">Load</button>
+                <button class="btn success" onclick="previewApp()">Preview</button>
+                <button class="btn" onclick="showExportModal()" style="background: #e74c3c;">Export APK</button>
+                <button class="btn secondary" onclick="showFeaturesModal()">Features</button>
             </div>
-        </div>
 
-        <!-- Statistics Tab -->
-        <div class="tab-content" id="stats-tab">
-            <div class="timer-section">
-                <h2 class="section-title">Study Statistics</h2>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalStudyTime">0h 0m</div>
-                        <div class="stat-label">Total Study Time</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="sessionsCompleted">0</div>
-                        <div class="stat-label">Sessions Completed</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="tasksCompleted">0</div>
-                        <div class="stat-label">Tasks Completed</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="avgSessionTime">0m</div>
-                        <div class="stat-label">Avg Session Time</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="studyStreak">0</div>
-                        <div class="stat-label">Day Streak</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="todayStudyTime">0h 0m</div>
-                        <div class="stat-label">Today's Study Time</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Progress Tab -->
-        <div class="tab-content" id="progress-tab">
-            <div class="progress-section">
-                <h2 class="section-title">Weekly Progress</h2>
-                
-                <div class="progress-chart">
-                    <div class="chart-title">Study Hours This Week</div>
-                    <div class="chart-bars" id="weeklyChart">
-                        <!-- Chart bars will be dynamically generated -->
-                    </div>
-                </div>
-
-                <div class="progress-chart">
-                    <div class="chart-title">Monthly Overview</div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="monthlyHours">0h</div>
-                            <div class="stat-label">This Month</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="monthlyGoal">60h</div>
-                            <div class="stat-label">Monthly Goal</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="monthlyProgress">0%</div>
-                            <div class="stat-label">Goal Progress</div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Editor Panel -->
+                <div class="editor-panel">
+                    <div class="editor-tabs" id="editor-tabs">
+                        <div class="editor-tab active" data-file="main.js">
+                            <span>main.js</span>
+                            <span class="tab-close" onclick="closeTab('main.js')">✕</span>
                         </div>
                     </div>
+                    
+                    <textarea class="code-editor" id="code-editor" placeholder="Start coding your app...">
+// Welcome to App Builder Studio!
+// This is your main JavaScript file
+
+class MobileApp {
+    constructor() {
+        this.features = {
+            pushNotifications: false,
+            camera: false,
+            gps: false,
+            storage: true,
+            networking: true
+        };
+        this.init();
+    }
+
+    init() {
+        this.setupUI();
+        this.bindEvents();
+        console.log('App initialized successfully!');
+    }
+
+    setupUI() {
+        const app = document.getElementById('app');
+        app.innerHTML = `
+            <div style="padding: 20px; text-align: center;">
+                <h1 style="color: #333; margin-bottom: 20px;">Welcome to My App</h1>
+                <button onclick="this.showMessage()" style="
+                    padding: 15px 30px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 25px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                ">Click Me!</button>
+                <div id="message" style="margin-top: 20px; font-size: 18px; color: #555;"></div>
+            </div>
+        `;
+    }
+
+    bindEvents() {
+        // Add event listeners here
+    }
+
+    showMessage() {
+        const messages = [
+            "Hello from your new app! 👋",
+            "This app was built with App Builder Studio! 🚀",
+            "Add more features from the Features panel! ⚡",
+            "Export as APK when ready! 📱"
+        ];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        document.getElementById('message').textContent = randomMessage;
+    }
+}
+
+// Initialize the app
+const myApp = new MobileApp();
+                    </textarea>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="preview-panel">
+                    <div class="preview-header">
+                        📱 Live Preview
+                    </div>
+                    <div class="phone-preview">
+                        <div class="phone-frame">
+                            <div class="phone-screen" id="preview-screen">
+                                <div id="app">
+                                    <div style="padding: 20px; text-align: center;">
+                                        <h1 style="color: #333; margin-bottom: 20px;">Welcome to My App</h1>
+                                        <button onclick="showPreviewMessage()" style="
+                                            padding: 15px 30px;
+                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                            color: white;
+                                            border: none;
+                                            border-radius: 25px;
+                                            font-size: 16px;
+                                            cursor: pointer;
+                                            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                                        ">Click Me!</button>
+                                        <div id="message" style="margin-top: 20px; font-size: 18px; color: #555;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Goals Tab -->
-        <div class="tab-content" id="goals-tab">
-            <div class="goals-section">
-                <h2 class="section-title">Study Goals</h2>
-                
-                <div class="goal-card">
-                    <div class="goal-header">
-                        <div class="goal-title">Daily Study Goal</div>
-                        <div id="dailyGoalTime">2h 0m / 3h 0m</div>
-                    </div>
-                    <div class="goal-progress">
-                        <div class="goal-progress-fill" id="dailyGoalProgress" style="width: 67%"></div>
-                    </div>
-                </div>
-
-                <div class="goal-card">
-                    <div class="goal-header">
-                        <div class="goal-title">Weekly Study Goal</div>
-                        <div id="weeklyGoalTime">12h 30m / 20h 0m</div>
-                    </div>
-                    <div class="goal-progress">
-                        <div class="goal-progress-fill" id="weeklyGoalProgress" style="width: 62%"></div>
-                    </div>
-                </div>
-
-                <div class="goal-card">
-                    <div class="goal-header">
-                        <div class="goal-title">Monthly Study Goal</div>
-                        <div id="monthlyGoalTime">45h 15m / 80h 0m</div>
-                    </div>
-                    <div class="goal-progress">
-                        <div class="goal-progress-fill" id="monthlyGoalProgressBar" style="width: 56%"></div>
-                    </div>
-                </div>
-
-                <div class="stats-grid" style="margin-top: 2rem;">
-                    <div class="stat-card">
-                        <div class="stat-value" id="bestStreak">7</div>
-                        <div class="stat-label">Best Streak (Days)</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="totalDays">45</div>
-                        <div class="stat-label">Total Study Days</div>
-                    </div>
-                </div>
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <span>Ready</span>
+                <span id="status-info">Building amazing mobile apps</span>
+                <span id="cursor-position">Line 1, Col 1</span>
             </div>
         </div>
     </div>
 
-    <!-- Notification Container -->
-    <div class="notification" id="notification"></div>
+    <!-- Modals -->
+    <!-- New File Modal -->
+    <div class="modal" id="new-file-modal">
+        <div class="modal-content">
+            <div class="modal-header">Create New File</div>
+            <div class="form-group">
+                <label>File Name:</label>
+                <input type="text" id="new-file-name" placeholder="e.g., components.js">
+            </div>
+            <div class="form-group">
+                <label>File Type:</label>
+                <select id="new-file-type">
+                    <option value="js">JavaScript (.js)</option>
+                    <option value="html">HTML (.html)</option>
+                    <option value="css">CSS (.css)</option>
+                    <option value="json">JSON (.json)</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn secondary" onclick="closeModal('new-file-modal')">Cancel</button>
+                <button class="btn" onclick="createNewFile()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Folder Modal -->
+    <div class="modal" id="new-folder-modal">
+        <div class="modal-content">
+            <div class="modal-header">Create New Folder</div>
+            <div class="form-group">
+                <label>Folder Name:</label>
+                <input type="text" id="new-folder-name" placeholder="e.g., components">
+            </div>
+            <div class="modal-actions">
+                <button class="btn secondary" onclick="closeModal('new-folder-modal')">Cancel</button>
+                <button class="btn" onclick="createNewFolder()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Modal -->
+    <div class="modal" id="features-modal">
+        <div class="modal-content" style="width: 500px;">
+            <div class="modal-header">App Features</div>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span>Push Notifications</span>
+                    <div class="feature-toggle" onclick="toggleFeature('pushNotifications')"></div>
+                </div>
+                <div class="feature-item">
+                    <span>Camera Access</span>
+                    <div class="feature-toggle" onclick="toggleFeature('camera')"></div>
+                </div>
+                <div class="feature-item">
+                    <span>GPS Location</span>
+                    <div class="feature-toggle" onclick="toggleFeature('gps')"></div>
+                </div>
+                <div class="feature-item">
+                    <span>Local Storage</span>
+                    <div class="feature-toggle active" onclick="toggleFeature('storage')"></div>
+                </div>
+                <div class="feature-item">
+                    <span>Network Access</span>
+                    <div class="feature-toggle active" onclick="toggleFeature('networking')"></div>
+                </div>
+                <div class="feature-item">
+                    <span>File System</span>
+                    <div class="feature-toggle" onclick="toggleFeature('fileSystem')"></div>
+                </div>
+                <div class="feature-item">
+                    <span>Bluetooth</span>
+                    <div class="feature-toggle" onclick="toggleFeature('bluetooth')"></div>
+                </div>
+                <div class="feature-item">
+                    <span>Audio Recording</span>
+                    <div class="feature-toggle" onclick="toggleFeature('audio')"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="closeModal('features-modal')">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <div class="modal-header">Export Your App</div>
+            <div class="form-group">
+                <label>App Name:</label>
+                <input type="text" id="export-app-name" value="My App">
+            </div>
+            <div class="form-group">
+                <label>Package Name:</label>
+                <input type="text" id="export-package-name" value="com.mycompany.myapp">
+            </div>
+            <div class="form-group">
+                <label>Version:</label>
+                <input type="text" id="export-version" value="1.0.0">
+            </div>
+            <div class="export-options">
+                <button class="export-btn" onclick="exportAPK()">📱 Export APK</button>
+                <button class="export-btn" onclick="exportAAB()">📦 Export AAB</button>
+                <button class="export-btn" onclick="exportSource()">💾 Export Source</button>
+                <button class="export-btn" onclick="exportWeb()">🌐 Export Web</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn secondary" onclick="closeModal('export-modal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="context-menu">
+        <div class="context-menu-item" onclick="contextAction('rename')">Rename</div>
+        <div class="context-menu-item" onclick="contextAction('delete')">Delete</div>
+        <div class="context-menu-item" onclick="contextAction('duplicate')">Duplicate</div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div>Processing...</div>
+    </div>
 
     <script>
-        class StudyMasterPro {
-            constructor() {
-                this.initializeData();
-                this.initializeElements();
-                this.initializeClock();
-                this.initializeTimer();
-                this.initializeTasks();
-                this.initializeNavigation();
-                this.initializeStats();
-                this.initializeProgress();
-                this.startClock();
-                this.loadData();
-                this.updateStats();
-                this.updateProgress();
+        // App state
+        let currentProject = {
+            name: 'My App',
+            files: {
+                'main.js': document.getElementById('code-editor').value,
+                'index.html': '<div id="app"></div>',
+                'style.css': 'body { margin: 0; padding: 0; font-family: Arial, sans-serif; }'
+            },
+            folders: [],
+            features: {
+                pushNotifications: false,
+                camera: false,
+                gps: false,
+                storage: true,
+                networking: true,
+                fileSystem: false,
+                bluetooth: false,
+                audio: false
             }
+        };
 
-            initializeData() {
-                this.showSeconds = true;
-                this.format24h = false;
-                this.smoothFlip = true;
-                this.previousTime = { hours: '', minutes: '', seconds: '' };
-                this.previousTimerTime = { minutes: '', seconds: '' };
-                this.isTimerFlipMode = true;
-                this.isFocusMode = false;
-                
-                // Timer data
-                this.timerDuration = 25 * 60; // 25 minutes in seconds
-                this.timeLeft = this.timerDuration;
-                this.isTimerRunning = false;
-                this.timerInterval = null;
-                this.currentSession = null;
-                
-                // Study data
-                this.studyData = {
-                    totalStudyTime: 0,
-                    sessionsCompleted: 0,
-                    tasksCompleted: 0,
-                    todayStudyTime: 0,
-                    weeklyData: [0, 0, 0, 0, 0, 0, 0], // 7 days
-                    streak: 0,
-                    lastStudyDate: null,
-                    sessions: [],
-                    tasks: []
-                };
-                
-                // Preload resources
-                this.preloadResources();
+        let activeTab = 'main.js';
+        let contextTarget = null;
+
+        // Initialize
+        updateFileCount();
+
+        // File management
+        function showNewFileModal() {
+            document.getElementById('new-file-modal').style.display = 'block';
+        }
+
+        function showNewFolderModal() {
+            document.getElementById('new-folder-modal').style.display = 'block';
+        }
+
+        function createNewFile() {
+            const name = document.getElementById('new-file-name').value;
+            const type = document.getElementById('new-file-type').value;
+            
+            if (!name) return;
+            
+            const fileName = name.includes('.') ? name : `${name}.${type}`;
+            currentProject.files[fileName] = getFileTemplate(type);
+            
+            addFileToExplorer(fileName);
+            openFile(fileName);
+            updateFileCount();
+            closeModal('new-file-modal');
+        }
+
+        function createNewFolder() {
+            const name = document.getElementById('new-folder-name').value;
+            if (!name) return;
+            
+            currentProject.folders.push(name);
+            addFolderToExplorer(name);
+            closeModal('new-folder-modal');
+        }
+
+        function getFileTemplate(type) {
+            const templates = {
+                js: '// New JavaScript file\nconsole.log("Hello from new file!");',
+                html: '<!DOCTYPE html>\n<html>\n<head>\n    <title>New Page</title>\n</head>\n<body>\n    <h1>New Page</h1>\n</body>\n</html>',
+                css: '/* New CSS file */\nbody {\n    margin: 0;\n    padding: 0;\n}',
+                json: '{\n    "name": "config",\n    "version": "1.0.0"\n}'
+            };
+            return templates[type] || '';
+        }
+
+        function addFileToExplorer(fileName) {
+            const explorer = document.getElementById('file-explorer');
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <span class="file-icon">${getFileIcon(fileName)}</span>
+                <span>${fileName}</span>
+            `;
+            fileItem.onclick = () => openFile(fileName);
+            fileItem.oncontextmenu = (e) => showContextMenu(e, fileName);
+            explorer.appendChild(fileItem);
+        }
+
+        function addFolderToExplorer(folderName) {
+            const explorer = document.getElementById('file-explorer');
+            const folderItem = document.createElement('div');
+            folderItem.className = 'file-item';
+            folderItem.innerHTML = `
+                <span class="file-icon">📁</span>
+                <span>${folderName}</span>
+            `;
+            explorer.appendChild(folderItem);
+        }
+
+        function getFileIcon(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            const icons = {
+                js: '📄',
+                html: '🌐',
+                css: '🎨',
+                json: '⚙️',
+                md: '📝'
+            };
+            return icons[ext] || '📄';
+        }
+
+        function openFile(fileName) {
+            if (!currentProject.files[fileName]) return;
+            
+            activeTab = fileName;
+            document.getElementById('code-editor').value = currentProject.files[fileName];
+            
+            // Update active tab
+            document.querySelectorAll('.editor-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            let tab = document.querySelector(`[data-file="${fileName}"]`);
+            if (!tab) {
+                addTab(fileName);
+                tab = document.querySelector(`[data-file="${fileName}"]`);
             }
+            tab.classList.add('active');
+            
+            // Update file explorer
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(fileName)) {
+                    item.classList.add('active');
+                }
+            });
 
-            initializeElements() {
-                // Clock elements
-                this.hoursCard = document.getElementById('hours');
-                this.minutesCard = document.getElementById('minutes');
-                this.secondsCard = document.getElementById('seconds');
-                this.secondsUnit = document.getElementById('secondsUnit');
-                this.ampmDisplay = document.getElementById('ampm');
-                this.dateDisplay = document.getElementById('dateDisplay');
-                this.secondsSeparator = document.getElementById('secondsSeparator');
-                this.clockContainer = document.getElementById('clockContainer');
-                
-                // Timer elements
-                this.timerDisplay = document.getElementById('timerDisplay');
-                this.timerFlipContainer = document.getElementById('timerFlipContainer');
-                this.timerMinutesCard = document.getElementById('timerMinutes');
-                this.timerSecondsCard = document.getElementById('timerSeconds');
-                this.toggleTimerDisplayBtn = document.getElementById('toggleTimerDisplay');
-                this.startTimerBtn = document.getElementById('startTimer');
-                this.pauseTimerBtn = document.getElementById('pauseTimer');
-                this.resetTimerBtn = document.getElementById('resetTimer');
-                this.customMinutesInput = document.getElementById('customMinutes');
-                this.setCustomTimerBtn = document.getElementById('setCustomTimer');
-                
-                // Task elements
-                this.taskInput = document.getElementById('taskInput');
-                this.addTaskBtn = document.getElementById('addTaskBtn');
-                this.taskList = document.getElementById('taskList');
-                
-                // Navigation
-                this.navTabs = document.querySelectorAll('.nav-tab');
-                this.tabContents = document.querySelectorAll('.tab-content');
-                
-                // Notification
-                this.notification = document.getElementById('notification');
-                
-                // Add touch events for focus mode
-                this.clockContainer.addEventListener('click', () => this.toggleFocusMode());
-                this.timerFlipContainer.addEventListener('click', () => this.toggleFocusMode());
-            }
+            updateStatusInfo(`Editing ${fileName}`);
+        }
 
-            initializeClock() {
-                const showSecondsBtn = document.getElementById('showSeconds');
-                const format12hBtn = document.getElementById('format12h');
-                const smoothFlipBtn = document.getElementById('smoothFlip');
-                const fullscreenBtn = document.getElementById('fullscreenBtn');
+        function addTab(fileName) {
+            const tabsContainer = document.getElementById('editor-tabs');
+            const tab = document.createElement('div');
+            tab.className = 'editor-tab';
+            tab.setAttribute('data-file', fileName);
+            tab.innerHTML = `
+                <span>${fileName}</span>
+                <span class="tab-close" onclick="closeTab('${fileName}')">✕</span>
+            `;
+            tab.onclick = (e) => {
+                if (!e.target.classList.contains('tab-close')) {
+                    openFile(fileName);
+                }
+            };
+            tabsContainer.appendChild(tab);
+        }
 
-                showSecondsBtn.addEventListener('click', () => {
-                    this.showSeconds = !this.showSeconds;
-                    showSecondsBtn.textContent = this.showSeconds ? 'Hide Seconds' : 'Show Seconds';
-                    showSecondsBtn.classList.toggle('active');
-                    this.secondsUnit.style.display = this.showSeconds ? 'flex' : 'none';
-                    this.secondsSeparator.style.display = this.showSeconds ? 'block' : 'none';
-                });
-
-                format12hBtn.addEventListener('click', () => {
-                    this.format24h = !this.format24h;
-                    format12hBtn.textContent = this.format24h ? '24 Hour' : '12 Hour';
-                    format12hBtn.classList.toggle('active');
-                    this.ampmDisplay.style.display = this.format24h ? 'none' : 'block';
-                });
-
-                smoothFlipBtn.addEventListener('click', () => {
-                    this.smoothFlip = !this.smoothFlip;
-                    smoothFlipBtn.textContent = this.smoothFlip ? 'Normal Flip' : 'Enhanced Flip';
-                    smoothFlipBtn.classList.toggle('active');
-                });
-
-                fullscreenBtn.addEventListener('click', () => {
-                    this.toggleFullscreen();
-                });
-            }
-
-            initializeTimer() {
-                this.startTimerBtn.addEventListener('click', () => this.startTimer());
-                this.pauseTimerBtn.addEventListener('click', () => this.pauseTimer());
-                this.resetTimerBtn.addEventListener('click', () => this.resetTimer());
-                this.setCustomTimerBtn.addEventListener('click', () => this.setCustomTimer());
-
-                // Preset buttons
-                document.querySelectorAll('.preset-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const minutes = parseInt(btn.dataset.minutes);
-                        this.setTimer(minutes);
-                    });
-                });
-
-                this.updateTimerDisplay();
-            }
-
-            initializeTasks() {
-                this.addTaskBtn.addEventListener('click', () => this.addTask());
-                this.taskInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.addTask();
+        function closeTab(fileName) {
+            const tab = document.querySelector(`[data-file="${fileName}"]`);
+            if (tab) {
+                tab.remove();
+                if (activeTab === fileName) {
+                    const remainingTabs = document.querySelectorAll('.editor-tab');
+                    if (remainingTabs.length > 0) {
+                        openFile(remainingTabs[0].getAttribute('data-file'));
                     }
-                });
-            }
-
-            initializeNavigation() {
-                this.navTabs.forEach(tab => {
-                    tab.addEventListener('click', () => {
-                        const targetTab = tab.dataset.tab;
-                        this.switchTab(targetTab);
-                    });
-                });
-            }
-
-            initializeStats() {
-                // Initialize stat elements
-                this.totalStudyTimeEl = document.getElementById('totalStudyTime');
-                this.sessionsCompletedEl = document.getElementById('sessionsCompleted');
-                this.tasksCompletedEl = document.getElementById('tasksCompleted');
-                this.avgSessionTimeEl = document.getElementById('avgSessionTime');
-                this.studyStreakEl = document.getElementById('studyStreak');
-                this.todayStudyTimeEl = document.getElementById('todayStudyTime');
-            }
-
-            initializeProgress() {
-                this.weeklyChartEl = document.getElementById('weeklyChart');
-                this.generateWeeklyChart();
-            }
-
-            // Clock Methods
-            getIndiaTime() {
-                const now = new Date();
-                return new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-            }
-
-            formatTime(date) {
-                let hours = date.getHours();
-                const minutes = date.getMinutes();
-                const seconds = date.getSeconds();
-                let ampm = '';
-                
-                if (!this.format24h) {
-                    ampm = hours >= 12 ? 'PM' : 'AM';
-                    hours = hours % 12;
-                    hours = hours ? hours : 12;
-                }
-                
-                return {
-                    hours: String(hours).padStart(2, '0'),
-                    minutes: String(minutes).padStart(2, '0'),
-                    seconds: String(seconds).padStart(2, '0'),
-                    ampm: ampm
-                };
-            }
-
-            formatDate(date) {
-                const options = { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                };
-                return date.toLocaleDateString('en-IN', options);
-            }
-
-            flipCard(card, newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    const front = card.querySelector('.flip-card-front');
-                    const back = card.querySelector('.flip-card-back');
-                    
-                    back.textContent = newValue;
-                    card.classList.add('flipping');
-                    
-                    const duration = this.smoothFlip ? 1000 : 800;
-                    setTimeout(() => {
-                        front.textContent = newValue;
-                        card.classList.remove('flipping');
-                    }, duration);
-                }
-            }
-
-            updateClock() {
-                const indiaTime = this.getIndiaTime();
-                const timeData = this.formatTime(indiaTime);
-                
-                this.flipCard(this.hoursCard, timeData.hours, this.previousTime.hours);
-                this.flipCard(this.minutesCard, timeData.minutes, this.previousTime.minutes);
-                
-                if (this.showSeconds) {
-                    this.flipCard(this.secondsCard, timeData.seconds, this.previousTime.seconds);
-                }
-                
-                if (!this.format24h) {
-                    this.ampmDisplay.textContent = timeData.ampm;
-                }
-                
-                this.dateDisplay.textContent = this.formatDate(indiaTime);
-                
-                this.previousTime = {
-                    hours: timeData.hours,
-                    minutes: timeData.minutes,
-                    seconds: timeData.seconds
-                };
-            }
-
-            startClock() {
-                this.updateClock();
-                setInterval(() => {
-                    this.updateClock();
-                }, 1000);
-            }
-
-            // Timer Methods
-            setTimer(minutes) {
-                this.timerDuration = minutes * 60;
-                this.timeLeft = this.timerDuration;
-                this.updateTimerDisplay();
-                this.showNotification(`Timer set to ${minutes} minutes`, 'info');
-            }
-
-            setCustomTimer() {
-                const minutes = parseInt(this.customMinutesInput.value);
-                if (minutes && minutes > 0) {
-                    this.setTimer(minutes);
-                    this.customMinutesInput.value = '';
-                } else {
-                    this.showNotification('Please enter a valid number of minutes', 'warning');
-                }
-            }
-
-            startTimer() {
-                if (!this.isTimerRunning) {
-                    this.isTimerRunning = true;
-                    this.currentSession = {
-                        startTime: Date.now(),
-                        duration: this.timerDuration,
-                        completed: false
-                    };
-                    
-                    this.timerInterval = setInterval(() => {
-                        this.timeLeft--;
-                        this.updateTimerDisplay();
-                        
-                        if (this.timeLeft <= 0) {
-                            this.completeTimer();
-                        }
-                    }, 1000);
-                    
-                    this.startTimerBtn.textContent = 'Running...';
-                    this.startTimerBtn.disabled = true;
-                    this.showNotification('Timer started!', 'success');
-                }
-            }
-
-            pauseTimer() {
-                if (this.isTimerRunning) {
-                    this.isTimerRunning = false;
-                    clearInterval(this.timerInterval);
-                    this.startTimerBtn.textContent = 'Resume';
-                    this.startTimerBtn.disabled = false;
-                    this.showNotification('Timer paused', 'info');
-                } else if (this.timeLeft > 0) {
-                    this.startTimer();
-                }
-            }
-
-            resetTimer() {
-                this.isTimerRunning = false;
-                clearInterval(this.timerInterval);
-                this.timeLeft = this.timerDuration;
-                this.currentSession = null;
-                this.updateTimerDisplay();
-                this.startTimerBtn.textContent = 'Start';
-                this.startTimerBtn.disabled = false;
-                this.showNotification('Timer reset', 'info');
-            }
-
-            completeTimer() {
-                this.isTimerRunning = false;
-                clearInterval(this.timerInterval);
-                
-                // Record the completed session
-                const sessionTime = Math.floor((this.timerDuration - this.timeLeft) / 60);
-                this.recordStudySession(sessionTime);
-                
-                this.showNotification('Study session completed! Great job!', 'success');
-                this.playNotificationSound();
-                
-                this.startTimerBtn.textContent = 'Start';
-                this.startTimerBtn.disabled = false;
-                this.timeLeft = this.timerDuration;
-                this.updateTimerDisplay();
-                this.updateStats();
-                this.updateProgress();
-                this.saveData();
-            }
-
-            updateTimerDisplay() {
-                const minutes = Math.floor(this.timeLeft / 60);
-                const seconds = this.timeLeft % 60;
-                this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                this.updateTimerFlipCards();
-            }
-
-            updateTimerFlipCards() {
-                const minutes = Math.floor(this.timeLeft / 60);
-                const seconds = this.timeLeft % 60;
-                const timerData = {
-                    minutes: String(minutes).padStart(2, '0'),
-                    seconds: String(seconds).padStart(2, '0')
-                };
-                
-                this.flipCard(this.timerMinutesCard, timerData.minutes, this.previousTimerTime.minutes);
-                this.flipCard(this.timerSecondsCard, timerData.seconds, this.previousTimerTime.seconds);
-                
-                this.previousTimerTime = {
-                    minutes: timerData.minutes,
-                    seconds: timerData.seconds
-                };
-            }
-
-            toggleTimerDisplay() {
-                this.isTimerFlipMode = !this.isTimerFlipMode;
-                if (this.isTimerFlipMode) {
-                    this.timerFlipContainer.style.display = 'flex';
-                    this.timerDisplay.style.display = 'none';
-                    this.toggleTimerDisplayBtn.textContent = 'Switch to Digital';
-                } else {
-                    this.timerFlipContainer.style.display = 'none';
-                    this.timerDisplay.style.display = 'block';
-                    this.toggleTimerDisplayBtn.textContent = 'Switch to Flip';
-                }
-            }
-
-            toggleFocusMode() {
-                this.isFocusMode = !this.isFocusMode;
-                document.body.classList.toggle('focus-mode', this.isFocusMode);
-                
-                if (this.isFocusMode) {
-                    this.showNotification('Focus mode activated - tap again to exit', 'info');
-                } else {
-                    this.showNotification('Focus mode deactivated', 'info');
-                }
-            }
-
-            preloadResources() {
-                // Force browser to download and cache fonts
-                const fontPreloader = document.createElement('div');
-                fontPreloader.className = 'preload-fonts';
-                fontPreloader.innerHTML = '0123456789:';
-                document.body.appendChild(fontPreloader);
-                
-                // Preload flip animation frames
-                setTimeout(() => {
-                    ['hours', 'minutes', 'seconds', 'timerMinutes', 'timerSeconds'].forEach(cardId => {
-                        const card = document.getElementById(cardId);
-                        if (card) {
-                            card.classList.add('smooth');
-                        }
-                    });
-                }, 100);
-                
-                // Remove preloader
-                setTimeout(() => {
-                    document.body.removeChild(fontPreloader);
-                }, 500);
-            }
-
-            // Task Methods
-            addTask() {
-                const taskText = this.taskInput.value.trim();
-                if (taskText) {
-                    const task = {
-                        id: Date.now(),
-                        text: taskText,
-                        completed: false,
-                        createdAt: new Date().toISOString()
-                    };
-                    
-                    this.studyData.tasks.push(task);
-                    this.renderTasks();
-                    this.taskInput.value = '';
-                    this.saveData();
-                    this.showNotification('Task added successfully!', 'success');
-                }
-            }
-
-            toggleTask(taskId) {
-                const task = this.studyData.tasks.find(t => t.id === taskId);
-                if (task) {
-                    task.completed = !task.completed;
-                    if (task.completed) {
-                        task.completedAt = new Date().toISOString();
-                        this.studyData.tasksCompleted++;
-                        this.showNotification('Task completed! Well done!', 'success');
-                    } else {
-                        this.studyData.tasksCompleted--;
-                    }
-                    this.renderTasks();
-                    this.updateStats();
-                    this.saveData();
-                }
-            }
-
-            deleteTask(taskId) {
-                const taskIndex = this.studyData.tasks.findIndex(t => t.id === taskId);
-                if (taskIndex > -1) {
-                    const task = this.studyData.tasks[taskIndex];
-                    if (task.completed) {
-                        this.studyData.tasksCompleted--;
-                    }
-                    this.studyData.tasks.splice(taskIndex, 1);
-                    this.renderTasks();
-                    this.updateStats();
-                    this.saveData();
-                    this.showNotification('Task deleted', 'info');
-                }
-            }
-
-            renderTasks() {
-                this.taskList.innerHTML = '';
-                
-                this.studyData.tasks.forEach(task => {
-                    const taskElement = this.createTaskElement(task);
-                    this.taskList.appendChild(taskElement);
-                });
-            }
-
-            createTaskElement(task) {
-                const taskItem = document.createElement('div');
-                taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
-                
-                const createdDate = new Date(task.createdAt).toLocaleDateString();
-                
-                taskItem.innerHTML = `
-                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="app.toggleTask(${task.id})"></div>
-                    <div class="task-text">${task.text}</div>
-                    <div class="task-time">${createdDate}</div>
-                    <button class="task-delete" onclick="app.deleteTask(${task.id})">Delete</button>
-                `;
-                
-                return taskItem;
-            }
-
-            // Statistics Methods
-            recordStudySession(minutes) {
-                const session = {
-                    date: new Date().toISOString().split('T')[0],
-                    duration: minutes,
-                    timestamp: Date.now()
-                };
-                
-                this.studyData.sessions.push(session);
-                this.studyData.totalStudyTime += minutes;
-                this.studyData.sessionsCompleted++;
-                this.studyData.todayStudyTime += minutes;
-                
-                // Update weekly data
-                const today = new Date().getDay();
-                this.studyData.weeklyData[today] += minutes;
-                
-                this.updateStreak();
-            }
-
-            updateStreak() {
-                const today = new Date().toISOString().split('T')[0];
-                if (this.studyData.lastStudyDate !== today) {
-                    const lastDate = new Date(this.studyData.lastStudyDate || today);
-                    const todayDate = new Date(today);
-                    const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
-                    
-                    if (daysDiff === 1) {
-                        this.studyData.streak++;
-                    } else if (daysDiff > 1) {
-                        this.studyData.streak = 1;
-                    }
-                    
-                    this.studyData.lastStudyDate = today;
-                }
-            }
-
-            updateStats() {
-                this.totalStudyTimeEl.textContent = this.formatDuration(this.studyData.totalStudyTime);
-                this.sessionsCompletedEl.textContent = this.studyData.sessionsCompleted;
-                this.tasksCompletedEl.textContent = this.studyData.tasksCompleted;
-                this.studyStreakEl.textContent = this.studyData.streak;
-                this.todayStudyTimeEl.textContent = this.formatDuration(this.studyData.todayStudyTime);
-                
-                // Calculate average session time
-                const avgTime = this.studyData.sessionsCompleted > 0 
-                    ? Math.round(this.studyData.totalStudyTime / this.studyData.sessionsCompleted)
-                    : 0;
-                this.avgSessionTimeEl.textContent = `${avgTime}m`;
-            }
-
-            updateProgress() {
-                this.generateWeeklyChart();
-                this.updateMonthlyStats();
-                this.updateGoalProgress();
-            }
-
-            generateWeeklyChart() {
-                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                const maxHours = Math.max(...this.studyData.weeklyData, 1);
-                
-                this.weeklyChartEl.innerHTML = '';
-                
-                this.studyData.weeklyData.forEach((minutes, index) => {
-                    const hours = minutes / 60;
-                    const height = (hours / maxHours) * 100;
-                    
-                    const bar = document.createElement('div');
-                    bar.className = 'chart-bar';
-                    bar.style.height = `${height}%`;
-                    
-                    const label = document.createElement('div');
-                    label.className = 'chart-label';
-                    label.textContent = days[index];
-                    
-                    const value = document.createElement('div');
-                    value.className = 'chart-value';
-                    value.textContent = `${hours.toFixed(1)}h`;
-                    
-                    bar.appendChild(label);
-                    bar.appendChild(value);
-                    this.weeklyChartEl.appendChild(bar);
-                });
-            }
-
-            updateMonthlyStats() {
-                const monthlyHours = Math.floor(this.studyData.totalStudyTime / 60);
-                const monthlyGoal = 60; // 60 hours goal
-                const progress = Math.min((monthlyHours / monthlyGoal) * 100, 100);
-                
-                document.getElementById('monthlyHours').textContent = `${monthlyHours}h`;
-                document.getElementById('monthlyProgress').textContent = `${Math.round(progress)}%`;
-            }
-
-            updateGoalProgress() {
-                // Daily goal (3 hours)
-                const dailyGoal = 180; // 3 hours in minutes
-                const dailyProgress = Math.min((this.studyData.todayStudyTime / dailyGoal) * 100, 100);
-                document.getElementById('dailyGoalProgress').style.width = `${dailyProgress}%`;
-                document.getElementById('dailyGoalTime').textContent = 
-                    `${this.formatDuration(this.studyData.todayStudyTime)} / ${this.formatDuration(dailyGoal)}`;
-                
-                // Weekly goal (20 hours)
-                const weeklyTotal = this.studyData.weeklyData.reduce((a, b) => a + b, 0);
-                const weeklyGoal = 1200; // 20 hours in minutes
-                const weeklyProgress = Math.min((weeklyTotal / weeklyGoal) * 100, 100);
-                document.getElementById('weeklyGoalProgress').style.width = `${weeklyProgress}%`;
-                document.getElementById('weeklyGoalTime').textContent = 
-                    `${this.formatDuration(weeklyTotal)} / ${this.formatDuration(weeklyGoal)}`;
-                
-                // Monthly goal (80 hours)
-                const monthlyTotal = this.studyData.totalStudyTime;
-                const monthlyGoal = 4800; // 80 hours in minutes
-                const monthlyProgress = Math.min((monthlyTotal / monthlyGoal) * 100, 100);
-                document.getElementById('monthlyGoalProgressBar').style.width = `${monthlyProgress}%`;
-                document.getElementById('monthlyGoalTime').textContent = 
-                    `${this.formatDuration(monthlyTotal)} / ${this.formatDuration(monthlyGoal)}`;
-            }
-
-            // Utility Methods
-            formatDuration(minutes) {
-                const hours = Math.floor(minutes / 60);
-                const mins = minutes % 60;
-                return `${hours}h ${mins}m`;
-            }
-
-            switchTab(tabName) {
-                // Update active nav tab
-                this.navTabs.forEach(tab => {
-                    tab.classList.toggle('active', tab.dataset.tab === tabName);
-                });
-                
-                // Update active tab content
-                this.tabContents.forEach(content => {
-                    content.classList.toggle('active', content.id === `${tabName}-tab`);
-                });
-            }
-
-            showNotification(message, type = 'info') {
-                this.notification.textContent = message;
-                this.notification.className = `notification ${type} show`;
-                
-                setTimeout(() => {
-                    this.notification.classList.remove('show');
-                }, 3000);
-            }
-
-            playNotificationSound() {
-                // Create a simple beep sound using Web Audio API
-                try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.value = 800;
-                    oscillator.type = 'sine';
-                    
-                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                } catch (error) {
-                    console.log('Audio not supported');
-                }
-            }
-
-            toggleFullscreen() {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(() => {
-                        this.showNotification('Fullscreen not supported', 'warning');
-                    });
-                } else {
-                    document.exitFullscreen();
-                }
-            }
-
-            // Data Persistence
-            saveData() {
-                try {
-                    localStorage.setItem('studyMasterData', JSON.stringify(this.studyData));
-                } catch (error) {
-                    console.error('Failed to save data:', error);
-                }
-            }
-
-            loadData() {
-                try {
-                    const savedData = localStorage.getItem('studyMasterData');
-                    if (savedData) {
-                        const data = JSON.parse(savedData);
-                        this.studyData = { ...this.studyData, ...data };
-                        
-                        // Reset daily data if it's a new day
-                        const today = new Date().toISOString().split('T')[0];
-                        if (this.studyData.lastStudyDate !== today) {
-                            this.studyData.todayStudyTime = 0;
-                            
-                            // Reset weekly data if it's a new week
-                            const lastDate = new Date(this.studyData.lastStudyDate || today);
-                            const todayDate = new Date(today);
-                            const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
-                            
-                            if (daysDiff >= 7) {
-                                this.studyData.weeklyData = [0, 0, 0, 0, 0, 0, 0];
-                            }
-                        }
-                        
-                        this.renderTasks();
-                    }
-                } catch (error) {
-                    console.error('Failed to load data:', error);
                 }
             }
         }
 
-        // Initialize the application
-        let app;
-        document.addEventListener('DOMContentLoaded', () => {
-            app = new StudyMasterPro();
+        // Editor functionality
+        document.getElementById('code-editor').addEventListener('input', function() {
+            currentProject.files[activeTab] = this.value;
+            updatePreview();
         });
 
-        // Auto-save data every 30 seconds
+        document.getElementById('code-editor').addEventListener('selectionchange', updateCursorPosition);
+        document.getElementById('code-editor').addEventListener('keyup', updateCursorPosition);
+
+        function updateCursorPosition() {
+            const editor = document.getElementById('code-editor');
+            const position = editor.selectionStart;
+            const lines = editor.value.substr(0, position).split('\n');
+            const line = lines.length;
+            const col = lines[lines.length - 1].length + 1;
+            document.getElementById('cursor-position').textContent = `Line ${line}, Col ${col}`;
+        }
+
+        // Preview functionality
+        function updatePreview() {
+            try {
+                // This is a simplified preview - in a real app builder, 
+                // you'd have a more sophisticated rendering system
+                updateStatusInfo('Preview updated');
+            } catch (error) {
+                updateStatusInfo('Preview error: ' + error.message);
+            }
+        }
+
+        function previewApp() {
+            updatePreview();
+            updateStatusInfo('App preview refreshed');
+        }
+
+        function showPreviewMessage() {
+            const messages = [
+                "Hello from your new app! 👋",
+                "This app was built with App Builder Studio! 🚀",
+                "Add more features from the Features panel! ⚡",
+                "Export as APK when ready! 📱"
+            ];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById('message').textContent = randomMessage;
+        }
+
+        // Project management
+        function newProject() {
+            if (confirm('Create new project? Unsaved changes will be lost.')) {
+                currentProject = {
+                    name: 'New App',
+                    files: {
+                        'main.js': getFileTemplate('js'),
+                        'index.html': getFileTemplate('html'),
+                        'style.css': getFileTemplate('css')
+                    },
+                    folders: [],
+                    features: {
+                        pushNotifications: false,
+                        camera: false,
+                        gps: false,
+                        storage: true,
+                        networking: true
+                    }
+                };
+                
+                refreshFileExplorer();
+                openFile('main.js');
+                updateStatusInfo('New project created');
+            }
+        }
+
+        function saveProject() {
+            const projectData = JSON.stringify(currentProject, null, 2);
+            const blob = new Blob([projectData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentProject.name}.appproject`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            updateStatusInfo('Project saved');
+        }
+
+        function loadProject() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.appproject';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            currentProject = JSON.parse(e.target.result);
+                            refreshFileExplorer();
+                            openFile(Object.keys(currentProject.files)[0]);
+                            updateStatusInfo('Project loaded successfully');
+                        } catch (error) {
+                            alert('Error loading project: ' + error.message);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function refreshFileExplorer() {
+            const explorer = document.getElementById('file-explorer');
+            // Keep the New File and New Folder buttons, remove everything else
+            const buttons = explorer.querySelectorAll('.file-item');
+            for (let i = 2; i < buttons.length; i++) {
+                buttons[i].remove();
+            }
+            
+            // Add folders
+            currentProject.folders.forEach(folder => {
+                addFolderToExplorer(folder);
+            });
+            
+            // Add files
+            Object.keys(currentProject.files).forEach(fileName => {
+                addFileToExplorer(fileName);
+            });
+            
+            updateFileCount();
+            document.getElementById('project-name').textContent = currentProject.name;
+        }
+
+        // Features management
+        function showFeaturesModal() {
+            document.getElementById('features-modal').style.display = 'block';
+            updateFeatureToggles();
+        }
+
+        function toggleFeature(featureName) {
+            currentProject.features[featureName] = !currentProject.features[featureName];
+            updateFeatureToggles();
+            updateStatusInfo(`Feature ${featureName} ${currentProject.features[featureName] ? 'enabled' : 'disabled'}`);
+        }
+
+        function updateFeatureToggles() {
+            const toggles = document.querySelectorAll('.feature-toggle');
+            const features = Object.keys(currentProject.features);
+            
+            toggles.forEach((toggle, index) => {
+                const featureName = features[index];
+                if (currentProject.features[featureName]) {
+                    toggle.classList.add('active');
+                } else {
+                    toggle.classList.remove('active');
+                }
+            });
+        }
+
+        // Export functionality
+        function showExportModal() {
+            document.getElementById('export-modal').style.display = 'block';
+            document.getElementById('export-app-name').value = currentProject.name;
+        }
+
+        function exportAPK() {
+            showLoading();
+            
+            setTimeout(() => {
+                const appName = document.getElementById('export-app-name').value;
+                const packageName = document.getElementById('export-package-name').value;
+                const version = document.getElementById('export-version').value;
+                
+                // Create a mock APK file (in reality, this would involve complex build processes)
+                const apkContent = createAPKContent(appName, packageName, version);
+                const blob = new Blob([apkContent], { type: 'application/vnd.android.package-archive' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${appName.replace(/\s+/g, '')}.apk`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                hideLoading();
+                closeModal('export-modal');
+                updateStatusInfo('APK exported successfully');
+                
+                // Show success message
+                alert(`APK exported successfully!\n\nApp: ${appName}\nPackage: ${packageName}\nVersion: ${version}\n\nThe APK file has been downloaded and can be installed on Android devices.`);
+            }, 3000);
+        }
+
+        function exportAAB() {
+            showLoading();
+            
+            setTimeout(() => {
+                const appName = document.getElementById('export-app-name').value;
+                const aabContent = createAABContent(appName);
+                const blob = new Blob([aabContent], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${appName.replace(/\s+/g, '')}.aab`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                hideLoading();
+                closeModal('export-modal');
+                updateStatusInfo('AAB exported successfully');
+            }, 2500);
+        }
+
+        function exportSource() {
+            const sourceCode = JSON.stringify({
+                ...currentProject,
+                metadata: {
+                    exportDate: new Date().toISOString(),
+                    builderVersion: '1.0.0'
+                }
+            }, null, 2);
+            
+            const blob = new Blob([sourceCode], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentProject.name}-source.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            closeModal('export-modal');
+            updateStatusInfo('Source code exported');
+        }
+
+        function exportWeb() {
+            showLoading();
+            
+            setTimeout(() => {
+                const webContent = createWebApp();
+                const blob = new Blob([webContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentProject.name.replace(/\s+/g, '')}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                hideLoading();
+                closeModal('export-modal');
+                updateStatusInfo('Web app exported');
+            }, 1500);
+        }
+
+        function createAPKContent(appName, packageName, version) {
+            // This is a simplified mock APK creation
+            // In reality, this would involve complex Android build tools
+            const manifest = `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="${packageName}"
+    android:versionCode="1"
+    android:versionName="${version}">
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    ${currentProject.features.camera ? '<uses-permission android:name="android.permission.CAMERA" />' : ''}
+    ${currentProject.features.gps ? '<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />' : ''}
+    ${currentProject.features.audio ? '<uses-permission android:name="android.permission.RECORD_AUDIO" />' : ''}
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="${appName}"
+        android:theme="@style/AppTheme">
+        
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+
+-- APP CODE --
+${JSON.stringify(currentProject, null, 2)}`;
+            
+            return manifest;
+        }
+
+        function createAABContent(appName) {
+            return `Android App Bundle for ${appName}\n${JSON.stringify(currentProject, null, 2)}`;
+        }
+
+        function createWebApp() {
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${currentProject.name}</title>
+    <style>
+        ${currentProject.files['style.css'] || 'body { margin: 0; padding: 0; font-family: Arial, sans-serif; }'}
+    </style>
+</head>
+<body>
+    ${currentProject.files['index.html'] || '<div id="app"></div>'}
+    
+    <script>
+        ${currentProject.files['main.js'] || '// Your app code here'}
+    </script>
+</body>
+</html>`;
+        }
+
+        // Context menu
+        function showContextMenu(e, fileName) {
+            e.preventDefault();
+            contextTarget = fileName;
+            const menu = document.getElementById('context-menu');
+            menu.style.display = 'block';
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+        }
+
+        function contextAction(action) {
+            if (!contextTarget) return;
+            
+            switch (action) {
+                case 'rename':
+                    const newName = prompt('Enter new name:', contextTarget);
+                    if (newName && newName !== contextTarget) {
+                        currentProject.files[newName] = currentProject.files[contextTarget];
+                        delete currentProject.files[contextTarget];
+                        refreshFileExplorer();
+                        openFile(newName);
+                    }
+                    break;
+                    
+                case 'delete':
+                    if (confirm(`Delete ${contextTarget}?`)) {
+                        delete currentProject.files[contextTarget];
+                        refreshFileExplorer();
+                        if (activeTab === contextTarget) {
+                            const remainingFiles = Object.keys(currentProject.files);
+                            if (remainingFiles.length > 0) {
+                                openFile(remainingFiles[0]);
+                            }
+                        }
+                    }
+                    break;
+                    
+                case 'duplicate':
+                    const copyName = contextTarget.replace(/(\.[^.]+)?$/, '_copy$1');
+                    currentProject.files[copyName] = currentProject.files[contextTarget];
+                    addFileToExplorer(copyName);
+                    updateFileCount();
+                    break;
+            }
+            
+            hideContextMenu();
+        }
+
+        function hideContextMenu() {
+            document.getElementById('context-menu').style.display = 'none';
+            contextTarget = null;
+        }
+
+        // Utility functions
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function updateStatusInfo(message) {
+            document.getElementById('status-info').textContent = message;
+        }
+
+        function updateFileCount() {
+            document.getElementById('file-count').textContent = Object.keys(currentProject.files).length;
+        }
+
+        // Event listeners
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.context-menu')) {
+                hideContextMenu();
+            }
+            
+            if (!e.target.closest('.modal-content') && e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case 's':
+                        e.preventDefault();
+                        saveProject();
+                        break;
+                    case 'o':
+                        e.preventDefault();
+                        loadProject();
+                        break;
+                    case 'n':
+                        e.preventDefault();
+                        if (e.shiftKey) {
+                            showNewFolderModal();
+                        } else {
+                            showNewFileModal();
+                        }
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        previewApp();
+                        break;
+                }
+            }
+        });
+
+        // Auto-save functionality
         setInterval(() => {
-            if (app) {
-                app.saveData();
+            if (activeTab && currentProject.files[activeTab]) {
+                currentProject.files[activeTab] = document.getElementById('code-editor').value;
             }
-        }, 30000);
+        }, 1000);
 
-        // Handle page visibility changes
-        document.addEventListener('visibilitychange', () => {
-            if (app && document.hidden) {
-                app.saveData();
-            }
+        // Initialize default files in explorer
+        Object.keys(currentProject.files).forEach(fileName => {
+            addFileToExplorer(fileName);
         });
 
-        // Handle beforeunload
-        window.addEventListener('beforeunload', () => {
-            if (app) {
-                app.saveData();
+        updateStatusInfo('App Builder Studio ready');
+
+        // Sample app templates
+        const appTemplates = {
+            'Todo App': {
+                'main.js': `// Todo App
+class TodoApp {
+    constructor() {
+        this.todos = [];
+        this.init();
+    }
+
+    init() {
+        this.render();
+        this.bindEvents();
+    }
+
+    render() {
+        const app = document.getElementById('app');
+        app.innerHTML = \`
+            <div style="padding: 20px; max-width: 400px; margin: 0 auto;">
+                <h1 style="text-align: center; color: #333;">My Todo App</h1>
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="todoInput" placeholder="Add new todo..." style="
+                        width: calc(100% - 80px);
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 5px;
+                    ">
+                    <button onclick="addTodo()" style="
+                        width: 70px;
+                        padding: 10px;
+                        background: #007acc;
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        margin-left: 5px;
+                    ">Add</button>
+                </div>
+                <div id="todoList"></div>
+            </div>
+        \`;
+        this.renderTodos();
+    }
+
+    addTodo() {
+        const input = document.getElementById('todoInput');
+        if (input.value.trim()) {
+            this.todos.push({
+                id: Date.now(),
+                text: input.value.trim(),
+                completed: false
+            });
+            input.value = '';
+            this.renderTodos();
+        }
+    }
+
+    toggleTodo(id) {
+        const todo = this.todos.find(t => t.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+            this.renderTodos();
+        }
+    }
+
+    deleteTodo(id) {
+        this.todos = this.todos.filter(t => t.id !== id);
+        this.renderTodos();
+    }
+
+    renderTodos() {
+        const list = document.getElementById('todoList');
+        list.innerHTML = this.todos.map(todo => \`
+            <div style="
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                margin-bottom: 5px;
+                background: #f9f9f9;
+                border-radius: 5px;
+                \${todo.completed ? 'opacity: 0.6;' : ''}
+            ">
+                <input type="checkbox" \${todo.completed ? 'checked' : ''} 
+                       onchange="toggleTodo(\${todo.id})" style="margin-right: 10px;">
+                <span style="
+                    flex: 1;
+                    \${todo.completed ? 'text-decoration: line-through;' : ''}
+                ">\${todo.text}</span>
+                <button onclick="deleteTodo(\${todo.id})" style="
+                    background: #e74c3c;
+                    color: white;
+                    border: none;
+                    padding: 5px 10px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                ">Delete</button>
+            </div>
+        \`).join('');
+    }
+}
+
+// Global functions for onclick handlers
+function addTodo() {
+    window.todoApp.addTodo();
+}
+
+function toggleTodo(id) {
+    window.todoApp.toggleTodo(id);
+}
+
+function deleteTodo(id) {
+    window.todoApp.deleteTodo(id);
+}
+
+// Initialize app
+window.todoApp = new TodoApp();`,
+
+                'style.css': `body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+#app {
+    background: white;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}`
+            },
+
+            'Weather App': {
+                'main.js': `// Weather App
+class WeatherApp {
+    constructor() {
+        this.apiKey = 'demo'; // In real app, use actual API key
+        this.init();
+    }
+
+    init() {
+        this.render();
+        this.loadWeather();
+    }
+
+    render() {
+        const app = document.getElementById('app');
+        app.innerHTML = \`
+            <div style="padding: 20px; text-align: center;">
+                <h1 style="color: #333; margin-bottom: 30px;">🌤️ Weather App</h1>
+                <div id="weather-display" style="
+                    background: linear-gradient(135deg, #74b9ff, #0984e3);
+                    color: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                ">
+                    <div id="location" style="font-size: 24px; margin-bottom: 10px;">Loading...</div>
+                    <div id="temperature" style="font-size: 48px; font-weight: bold; margin: 20px 0;">--°</div>
+                    <div id="description" style="font-size: 18px; margin-bottom: 20px;">--</div>
+                    <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                        <div>
+                            <div style="font-size: 14px; opacity: 0.8;">Humidity</div>
+                            <div id="humidity" style="font-size: 20px; font-weight: bold;">--%</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; opacity: 0.8;">Wind</div>
+                            <div id="wind" style="font-size: 20px; font-weight: bold;">-- km/h</div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="refreshWeather()" style="
+                    margin-top: 20px;
+                    padding: 12px 24px;
+                    background: #00b894;
+                    color: white;
+                    border: none;
+                    border-radius: 25px;
+                    font-size: 16px;
+                    cursor: pointer;
+                ">🔄 Refresh</button>
+            </div>
+        \`;
+    }
+
+    loadWeather() {
+        // Simulate API call with demo data
+        setTimeout(() => {
+            const demoWeather = {
+                location: 'New York',
+                temperature: Math.floor(Math.random() * 30) + 10,
+                description: ['Sunny', 'Cloudy', 'Partly Cloudy', 'Rainy'][Math.floor(Math.random() * 4)],
+                humidity: Math.floor(Math.random() * 40) + 40,
+                wind: Math.floor(Math.random() * 20) + 5
+            };
+            
+            document.getElementById('location').textContent = demoWeather.location;
+            document.getElementById('temperature').textContent = demoWeather.temperature + '°C';
+            document.getElementById('description').textContent = demoWeather.description;
+            document.getElementById('humidity').textContent = demoWeather.humidity + '%';
+            document.getElementById('wind').textContent = demoWeather.wind + ' km/h';
+        }, 1000);
+    }
+
+    refreshWeather() {
+        document.getElementById('location').textContent = 'Loading...';
+        document.getElementById('temperature').textContent = '--°';
+        document.getElementById('description').textContent = '--';
+        this.loadWeather();
+    }
+}
+
+function refreshWeather() {
+    window.weatherApp.refreshWeather();
+}
+
+window.weatherApp = new WeatherApp();`
+            },
+
+            'Calculator': {
+                'main.js': `// Calculator App
+class Calculator {
+    constructor() {
+        this.display = '0';
+        this.previousValue = null;
+        this.operation = null;
+        this.waitingForNewValue = false;
+        this.init();
+    }
+
+    init() {
+        this.render();
+    }
+
+    render() {
+        const app = document.getElementById('app');
+        app.innerHTML = \`
+            <div style="
+                max-width: 300px;
+                margin: 20px auto;
+                background: #333;
+                border-radius: 15px;
+                padding: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            ">
+                <div id="display" style="
+                    background: #000;
+                    color: #00ff00;
+                    font-size: 36px;
+                    font-family: 'Courier New', monospace;
+                    text-align: right;
+                    padding: 15px;
+                    margin-bottom: 20px;
+                    border-radius: 10px;
+                    min-height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                ">\${this.display}</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                    <button onclick="clearCalculator()" class="calc-btn special">C</button>
+                    <button onclick="toggleSign()" class="calc-btn special">±</button>
+                    <button onclick="percentage()" class="calc-btn special">%</button>
+                    <button onclick="setOperation('/')" class="calc-btn operator">÷</button>
+                    
+                    <button onclick="inputNumber('7')" class="calc-btn">7</button>
+                    <button onclick="inputNumber('8')" class="calc-btn">8</button>
+                    <button onclick="inputNumber('9')" class="calc-btn">9</button>
+                    <button onclick="setOperation('*')" class="calc-btn operator">×</button>
+                    
+                    <button onclick="inputNumber('4')" class="calc-btn">4</button>
+                    <button onclick="inputNumber('5')" class="calc-btn">5</button>
+                    <button onclick="inputNumber('6')" class="calc-btn">6</button>
+                    <button onclick="setOperation('-')" class="calc-btn operator">-</button>
+                    
+                    <button onclick="inputNumber('1')" class="calc-btn">1</button>
+                    <button onclick="inputNumber('2')" class="calc-btn">2</button>
+                    <button onclick="inputNumber('3')" class="calc-btn">3</button>
+                    <button onclick="setOperation('+')" class="calc-btn operator">+</button>
+                    
+                    <button onclick="inputNumber('0')" class="calc-btn" style="grid-column: span 2;">0</button>
+                    <button onclick="inputDecimal()" class="calc-btn">.</button>
+                    <button onclick="calculate()" class="calc-btn operator">=</button>
+                </div>
+            </div>
+            
+            <style>
+                .calc-btn {
+                    height: 60px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 24px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    background: #666;
+                    color: white;
+                }
+                
+                .calc-btn:hover {
+                    background: #777;
+                    transform: translateY(-2px);
+                }
+                
+                .calc-btn.operator {
+                    background: #ff9500;
+                }
+                
+                .calc-btn.operator:hover {
+                    background: #ffb143;
+                }
+                
+                .calc-btn.special {
+                    background: #a6a6a6;
+                    color: #000;
+                }
+                
+                .calc-btn.special:hover {
+                    background: #bfbfbf;
+                }
+            </style>
+        \`;
+    }
+
+    updateDisplay() {
+        document.getElementById('display').textContent = this.display;
+    }
+
+    inputNumber(num) {
+        if (this.waitingForNewValue) {
+            this.display = num;
+            this.waitingForNewValue = false;
+        } else {
+            this.display = this.display === '0' ? num : this.display + num;
+        }
+        this.updateDisplay();
+    }
+
+    inputDecimal() {
+        if (this.waitingForNewValue) {
+            this.display = '0.';
+            this.waitingForNewValue = false;
+        } else if (this.display.indexOf('.') === -1) {
+            this.display += '.';
+        }
+        this.updateDisplay();
+    }
+
+    clear() {
+        this.display = '0';
+        this.previousValue = null;
+        this.operation = null;
+        this.waitingForNewValue = false;
+        this.updateDisplay();
+    }
+
+    setOperation(nextOperation) {
+        const inputValue = parseFloat(this.display);
+
+        if (this.previousValue === null) {
+            this.previousValue = inputValue;
+        } else if (this.operation) {
+            const currentValue = this.previousValue || 0;
+            const newValue = this.performCalculation();
+
+            this.display = String(newValue);
+            this.previousValue = newValue;
+        }
+
+        this.waitingForNewValue = true;
+        this.operation = nextOperation;
+        this.updateDisplay();
+    }
+
+    performCalculation() {
+        const prev = this.previousValue;
+        const current = parseFloat(this.display);
+
+        if (prev === null || this.operation === null) {
+            return current;
+        }
+
+        switch (this.operation) {
+            case '+':
+                return prev + current;
+            case '-':
+                return prev - current;
+            case '*':
+                return prev * current;
+            case '/':
+                return current !== 0 ? prev / current : 0;
+            default:
+                return current;
+        }
+    }
+
+    calculate() {
+        const result = this.performCalculation();
+        this.display = String(result);
+        this.previousValue = null;
+        this.operation = null;
+        this.waitingForNewValue = true;
+        this.updateDisplay();
+    }
+}
+
+// Global functions
+function inputNumber(num) { window.calculator.inputNumber(num); }
+function inputDecimal() { window.calculator.inputDecimal(); }
+function setOperation(op) { window.calculator.setOperation(op); }
+function calculate() { window.calculator.calculate(); }
+function clearCalculator() { window.calculator.clear(); }
+function toggleSign() { 
+    const current = parseFloat(window.calculator.display);
+    window.calculator.display = String(-current);
+    window.calculator.updateDisplay();
+}
+function percentage() {
+    const current = parseFloat(window.calculator.display);
+    window.calculator.display = String(current / 100);
+    window.calculator.updateDisplay();
+}
+
+window.calculator = new Calculator();`
             }
-        });
+        };
+
+        // Add template selection
+        function addTemplateSelector() {
+            const toolbar = document.querySelector('.toolbar');
+            const templateSelect = document.createElement('select');
+            templateSelect.style.cssText = `
+                padding: 8px;
+                background: #2d2d30;
+                color: white;
+                border: 1px solid #555;
+                border-radius: 4px;
+                margin-left: 10px;
+            `;
+            
+            templateSelect.innerHTML = `
+                <option value="">Choose Template...</option>
+                <option value="Todo App">📝 Todo App</option>
+                <option value="Weather App">🌤️ Weather App</option>
+                <option value="Calculator">🔢 Calculator</option>
+            `;
+            
+            templateSelect.onchange = function() {
+                if (this.value && appTemplates[this.value]) {
+                    if (confirm(`Load ${this.value} template? Current project will be replaced.`)) {
+                        loadTemplate(this.value);
+                    }
+                    this.value = '';
+                }
+            };
+            
+            toolbar.appendChild(templateSelect);
+        }
+
+        function loadTemplate(templateName) {
+            const template = appTemplates[templateName];
+            if (template) {
+                currentProject.name = templateName;
+                currentProject.files = {
+                    'index.html': '<div id="app"></div>',
+                    ...template
+                };
+                
+                refreshFileExplorer();
+                openFile('main.js');
+                updateStatusInfo(`${templateName} template loaded`);
+                
+                // Update preview
+                setTimeout(updatePreview, 100);
+            }
+        }
+
+        // Initialize template selector
+        addTemplateSelector();
+
+        console.log('🚀 App Builder Studio initialized successfully!');
     </script>
 </body>
 </html>
-
